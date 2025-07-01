@@ -907,6 +907,7 @@ func (o *DebugOptions) transformPodForDebug(annotations map[string]string) (*cor
 	} else {
 		pod.Labels = map[string]string{}
 	}
+	pod.Labels["debug.openshift.io/managed-by"] = "oc-debug"
 
 	pod.ResourceVersion = ""
 	pod.Spec.RestartPolicy = corev1.RestartPolicyNever
