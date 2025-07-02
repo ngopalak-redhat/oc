@@ -907,7 +907,6 @@ func (o *DebugOptions) transformPodForDebug(annotations map[string]string) (*cor
 	} else {
 		pod.Labels = map[string]string{}
 	}
-	pod.Labels["debug.openshift.io/managed-by"] = "oc-debug"
 
 	pod.ResourceVersion = ""
 	pod.Spec.RestartPolicy = corev1.RestartPolicyNever
@@ -1054,6 +1053,11 @@ func (o *DebugOptions) approximatePodTemplateForObject(object runtime.Object) (*
 		isTrue := true
 		hostPathType := corev1.HostPathDirectory
 		template := &corev1.PodTemplateSpec{
+			ObjectMeta: metav1.ObjectMeta{
+				Labels: map[string]string{
+					"debug.openshift.io/managed-by": "oc-debug",
+				},
+			},
 			Spec: corev1.PodSpec{
 				NodeName:    t.Name,
 				HostNetwork: true,
