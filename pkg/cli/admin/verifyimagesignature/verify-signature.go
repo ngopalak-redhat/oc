@@ -9,11 +9,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/containers/image/v5/docker/policyconfiguration"
-	"github.com/containers/image/v5/docker/reference"
-	"github.com/containers/image/v5/signature"
-	sigtypes "github.com/containers/image/v5/types"
 	"github.com/spf13/cobra"
+	"go.podman.io/image/v5/docker/policyconfiguration"
+	"go.podman.io/image/v5/docker/reference"
+	"go.podman.io/image/v5/signature"
+	sigtypes "go.podman.io/image/v5/types"
 	"k8s.io/client-go/discovery"
 
 	corev1 "k8s.io/api/core/v1"
