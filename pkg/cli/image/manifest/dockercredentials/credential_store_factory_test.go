@@ -1,7 +1,7 @@
 package dockercredentials
 
 import (
-	imageTypes "github.com/containers/image/v5/types"
+	imageTypes "go.podman.io/image/v5/types"
 
 	"github.com/openshift/library-go/pkg/image/registryclient"
 	"testing"

@@ -7,9 +7,9 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/containers/image/v5/docker/reference"
-	dockerconfig "github.com/containers/image/v5/pkg/docker/config"
-	containertypes "github.com/containers/image/v5/types"
+	"go.podman.io/image/v5/docker/reference"
+	dockerconfig "go.podman.io/image/v5/pkg/docker/config"
+	containertypes "go.podman.io/image/v5/types"
 
 	"github.com/openshift/oc/pkg/helpers/image"
 	"github.com/openshift/oc/pkg/helpers/image/credentialprovider"

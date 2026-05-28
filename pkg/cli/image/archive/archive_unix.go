@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/containers/storage/pkg/system"
+	"go.podman.io/storage/pkg/system"
 	"golang.org/x/sys/unix"
 )
 

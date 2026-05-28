@@ -9,9 +9,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	dockerconfig "github.com/containers/image/v5/pkg/docker/config"
-	containertypes "github.com/containers/image/v5/types"
 	"github.com/spf13/cobra"
+	dockerconfig "go.podman.io/image/v5/pkg/docker/config"
+	containertypes "go.podman.io/image/v5/types"
 
 	corev1 "k8s.io/api/core/v1"
 	kerrors "k8s.io/apimachinery/pkg/api/errors"

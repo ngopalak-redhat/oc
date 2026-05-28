@@ -3,8 +3,8 @@ package dockercredentials
 import (
 	"testing"
 
-	"github.com/containers/image/v5/docker/reference"
-	containertypes "github.com/containers/image/v5/types"
+	"go.podman.io/image/v5/docker/reference"
+	containertypes "go.podman.io/image/v5/types"
 )
 
 func Test_AuthResolver(t *testing.T) {
