@@ -15,6 +15,7 @@ import (
 	"path"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"sort"
 	"strings"
 	"sync"
@@ -711,6 +712,12 @@ func (o *NewOptions) Run(ctx context.Context) error {
 			}
 		}
 		ordered = filteredNames
+
+		if len(o.ToImageBaseTag) > 0 {
+			ordered = slices.DeleteFunc(ordered, func(s string) bool {
+				return s == o.ToImageBaseTag
+			})
+		}
 	}
 
 	if len(o.Mirror) > 0 {
@@ -1035,6 +1042,13 @@ func (o *NewOptions) extractManifests(is *imageapi.ImageStream, name string, met
 				}
 
 				if len(labels[annotationReleaseOperator]) == 0 {
+					if tag.Name == o.ToImageBaseTag {
+						if err := os.MkdirAll(dstDir, 0777); err != nil {
+							return false, err
+						}
+						klog.V(2).Infof("Image %s is the release base image, extracting for image-references", m.ImageRef)
+						return true, nil
+					}
 					klog.V(2).Infof("Image %s has no %s label, skipping", m.ImageRef, annotationReleaseOperator)
 					return false, nil
 				}
