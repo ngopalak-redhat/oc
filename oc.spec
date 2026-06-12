@@ -52,7 +52,7 @@ BuildRequires:  rsync
 
 Provides:       atomic-openshift-clients = %{version}
 Obsoletes:      atomic-openshift-clients <= %{version}
-Requires:       bash-completion
+Recommends:     bash-completion
 
 %description
 %{summary}
