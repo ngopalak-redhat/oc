@@ -10,7 +10,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/tools/clientcmd"
 
-	oteginkgo "github.com/openshift-eng/openshift-tests-extension/pkg/ginkgo"
 	configv1 "github.com/openshift/api/config/v1"
 	configv1client "github.com/openshift/client-go/config/clientset/versioned/typed/config/v1"
 )
@@ -58,7 +57,7 @@ var _ = g.Describe("[sig-cli][OCPFeatureGate:ClusterUpdateAcceptRisks] oc", g.La
 		}
 	})
 
-	g.It("can operate accept risks [Serial]", g.Label("tech-preview"), oteginkgo.Informing(), func() {
+	g.It("can operate accept risks [Serial]", g.Label("tech-preview"), func() {
 
 		g.By("accepting some risks")
 		out, err := oc.Run("adm").Args("upgrade", "accept", "RiskA,RiskB").WithoutNamespace().Output()
