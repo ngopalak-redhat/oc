@@ -4,22 +4,9 @@ The OpenShift Client (`oc`) is the official CLI for OpenShift Container Platform
 
 ## Architecture: oc and kubectl Relationship
 
-kubectl is a subset of oc — every kubectl command is available in oc. The relationship between oc and kubectl commands falls into these categories:
+kubectl is a subset of oc — every kubectl command is available in oc. Commands range from pure kubectl wrappers (in `pkg/cli/kubectlwrappers/`) through OCP-extended wrappers, to fully OCP-native commands. The key rule: if a command is a pure kubectl wrapper, behavioral changes belong upstream in `k8s.io/kubectl`, not here.
 
-**Pure kubectl wrappers** — Commands wired via `pkg/cli/kubectlwrappers/wrappers.go` using `cmdutil.ReplaceCommandName("kubectl", "oc", ...)`. Includes: get, apply, delete, exec, run, patch, replace, describe, edit, label, annotate, cp, wait, events, port-forward, attach, proxy, explain, diff, auth, api-resources, api-versions, cluster-info, kustomize, completion, plugin. Changes to these should go upstream to `k8s.io/kubectl`.
-
-**Kubectl wrappers with OCP extensions** — `create` (adds route, deployment-config, user, identity, image-stream, build subcommands), `scale`/`autoscale` (adds deploymentconfig resource), `config` (adds admin-kubeconfig, refresh-ca-bundle subcommands). Under `oc adm`: drain, cordon, uncordon, taint, certificates are also kubectl wrappers.
-
-**Commands that extend kubectl** — These embed kubectl's implementation but add OCP-specific logic:
-- `logs` — embeds kubectl's `logs.LogsOptions`, adds Build, BuildConfig, DeploymentConfig, Jenkins pipeline support, and `--version` flag
-- `expose` — extends kubectl expose with OpenShift Route creation
-- `rollout`/`rollback` — extends with DeploymentConfig support
-
-**Commands that diverge from kubectl** — These have their own oc implementation:
-- `debug` — full custom implementation with OpenShift resource support
-- `set` — entirely oc-native with OCP-specific subcommands (env, volume, triggers, build-hook, deployment-hook, route-backends, etc.)
-
-**Purely OCP-native commands** — No kubectl equivalent: new-app, new-build, start-build, cancel-build, import-image, tag, login, logout, whoami, project, projects, request-project, rsh, rsync, status, process, extract, observe, idle, image, registry, policy, secrets, service-accounts, get-token, and the entire `oc adm` subtree (~30 admin subcommands).
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the full taxonomy and design rationale.
 
 ## Build and Test
 
@@ -44,10 +31,6 @@ go test -tags 'include_gcs include_oss containers_image_openpgp gssapi' ./pkg/cl
 # macOS / Windows (omit gssapi)
 go test -tags 'include_gcs include_oss containers_image_openpgp' ./pkg/cli/admin/policy/...
 ```
-
-System dependencies for building:
-- Fedora/CentOS/RHEL: `krb5-devel` (GSSAPI/Kerberos), `gpgme-devel`, `libassuan-devel`
-- macOS: `heimdal`, `gpgme` (via brew)
 
 ## Project Structure
 
@@ -115,17 +98,15 @@ func (o *ExampleOptions) Run() error { ... }
 ## Contributing Rules
 
 - **Do not modify `pkg/cli/cli.go`** unless it is part of a kubectl rebase process (to reflect changes from `kubectl/cmd.go`).
-- **Do not diverge from wrapped kubectl commands.** If a command is a kubectl wrapper, behavioral changes belong upstream in `k8s.io/kubectl`.
+- **Do not diverge from wrapped kubectl commands.** If a command is a pure kubectl wrapper, behavioral changes belong upstream in `k8s.io/kubectl`.
 - **Do not modify files under `vendor/`.** Regenerate via `go mod tidy && go mod vendor`.
 - **Do not edit generated files.** `contrib/completions/` and `docs/generated/` are generated — use `make update-generated-completions` to regenerate.
 - **Write unit tests for every change.** Some commands do not easily support unit tests without dramatic refactoring — those may be excluded, but test coverage is expected by default. Test fixtures go in `testdata/` subdirectories co-located with tests.
 - **Never remove commands, flags, or options without a deprecation notice.** Backwards compatibility is the most important aspect of this tool. Deprecate first, remove later. Use cobra's built-in deprecation: `cmd.Deprecated = "Use X instead"`.
 
-## Dependencies
+## Backporting
 
-Go Modules with vendoring. Workflow: `go mod tidy` then `go mod vendor`.
-
-Key dependencies: `spf13/cobra`, `k8s.io/client-go`, `k8s.io/kubectl`, `openshift/api`, `openshift/client-go`, `openshift/library-go`, `containers/image/v5`.
+Backports must flow sequentially from newer to older releases. On a merged PR, comment `/cherrypick <branches>` (space-separated) or `/jira backport <branches>` (comma-separated) to trigger automated cherry-picks. When cherry-picks fail due to conflicts, create the PR manually and use `/jira cherrypick OCPBUGS-XXX` to link the bug.
 
 ## Testing
 

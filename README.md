@@ -6,13 +6,11 @@ which means it provides its full capabilities to connect with any kubernetes
 compliant cluster, and on top adds commands simplifying interaction with an
 OpenShift cluster.
 
+## Documentation
 
-# Contributing
-
-All contributions are welcome - oc uses the Apache 2 license and does not require
-any contributor agreement to submit patches.  Please open issues for any bugs
-or problems you encounter. You can also get involved with the [kubectl](https://github.com/kubernetes/kubectl)
-and the [Kubernetes project](https://github.com/kubernetes/kubernetes).
+- [CONTRIBUTING.md](CONTRIBUTING.md) — code conventions, testing, PR process, CI, review expectations (shared across OpenShift Control Plane repos)
+- [ARCHITECTURE.md](ARCHITECTURE.md) — design decisions, component relationships, the kubectl wrapper taxonomy
+- [AGENTS.md](AGENTS.md) — instructions for AI coding agents
 
 ## Building
 
@@ -25,98 +23,52 @@ debugging symbols, run `make STRIP_DEBUGGING_SYMBOLS=false oc`.
 In order to build `oc`, you will need the GSSAPI sources. On a Fedora/CentOS/RHEL
 workstation, install them with:
 
-```
-dnf install krb5-devel
-```
-
-Also:
-
-```
-dnf install gpgme-devel
-dnf install libassuan-devel
+```bash
+dnf install krb5-devel gpgme-devel libassuan-devel
 ```
 
-For MacOS you'll need to install a few brew packages before building locally. Install them with:
+For macOS, install build dependencies with:
+
+```bash
+brew install heimdal gpgme
 ```
-brew install heimdal
-brew install gpgme
-```
+
 ## Testing
 
-All PRs will have to pass a series of automated tests starting from go tools
-such as `go fmt` and `go vet`, through unit tests, up to e2e against a real cluster.
+All PRs must pass automated checks — `go fmt`, `go vet`, unit tests, and e2e tests against a real cluster.
 
-Locally you can invoke the initial verification and unit test through `make verify`
-and `make test`, accordingly.
+Locally you can run verification and unit tests with:
+
+```bash
+make verify
+make test
+```
 
 ## Dependencies
 
 Dependencies are managed through [Go Modules](https://github.com/golang/go/wiki/Modules).
-When updating any dependency the suggested workflow is:
+When updating any dependency:
 
 1. `go mod tidy`
 2. `go mod vendor`
 
+## Key Dependencies
 
-# Security Response
+| Repository | Role |
+|---|---|
+| [kubernetes/kubectl](https://github.com/kubernetes/kubectl) | Upstream CLI — oc wraps and extends it |
+| [k8s.io/client-go](https://github.com/kubernetes/client-go) | Kubernetes API client library |
+| [openshift/api](https://github.com/openshift/api) | OCP API type definitions |
+| [openshift/client-go](https://github.com/openshift/client-go) | Typed clients for OCP resources |
+| [openshift/library-go](https://github.com/openshift/library-go) | Shared OCP library code |
+| [openshift/build-machinery-go](https://github.com/openshift/build-machinery-go) | Standard Makefile targets |
 
-If you've found a security issue that you'd like to disclose confidentially
-please contact Red Hat's Product Security team. Details at
-https://access.redhat.com/security/team/contact
+## Security
 
-## Tests
+If you've found a security issue that you'd like to disclose confidentially, please contact Red Hat's Product Security team. Details at https://access.redhat.com/security/team/contact
 
-This repository is compatible with the "OpenShift Tests Extension (OTE)" framework.
+Do not file security issues as public GitHub issues.
 
-### Building the test binary
-```bash
-make build
-```
-
-### Running test suites and tests
-```bash
-# Run a specific test suite or test
-./oc-tests-ext run-suite openshift/oc/all
-./oc-tests-ext run-test "test-name"
-
-# Run with JUnit output
-./oc-tests-ext run-suite openshift/oc/all --junit-path=/tmp/junit-results/junit.xml
-./oc-tests-ext run-test "test-name" --junit-path=/tmp/junit-results/junit.xml
-```
-
-### Listing available tests and suites
-```bash
-# List all test suites
-./oc-tests-ext list-suites
-
-# List tests in a specific suite
-./oc-tests-ext list-tests openshift/oc/all
-```
-
-The test extension binary is included in the production image for CI/CD integration.
-
-
-# Claude Code
-
-This repository is set up for use with [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
-Project-specific instructions live in `AGENTS.md`. When making changes, keep Claude's knowledge up to date —
-update `AGENTS.md` or the relevant agent definition in `.claude/agents/` if you discover conventions, patterns,
-or gotchas that would save time in future sessions. Keep these changes in a separate commit.
-
-Available agents in `.claude/agents/`:
-
-| Agent | Purpose |
-|-------|---------|
-| `code-reviewer` | PR code review — builds, verifies, reviews for Go style, breaking changes, and oc-specific concerns |
-| `tester` | Build, lint, and test runner — validates changes compile and pass tests |
-
-Available skills in `.claude/skills/`:
-
-| Skill | Purpose |
-|-------|---------|
-| `learn-session` | End-of-session knowledge extraction — reviews the conversation and proposes updates to docs |
-| `learn-history` | Deep analysis of all past sessions to extract recurring patterns worth documenting |
-
-# License
+## License
 
 oc is licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/).

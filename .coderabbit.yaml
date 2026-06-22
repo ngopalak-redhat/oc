@@ -10,5 +10,6 @@ knowledge_base:
     enabled: true
     filePatterns:
     - AGENTS.md
+    - ARCHITECTURE.md
   learnings:
     scope: local
