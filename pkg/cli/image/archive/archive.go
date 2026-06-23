@@ -150,7 +150,7 @@ func unpackLayer(dest string, layer io.Reader, options *TarOptions) (size int64,
 			return 0, err
 		}
 		// Note as these operations are platform specific, so must the slash be.
-		if strings.HasPrefix(rel, ".."+string(os.PathSeparator)) {
+		if rel == ".." || strings.HasPrefix(rel, ".."+string(os.PathSeparator)) {
 			return 0, breakoutError(fmt.Errorf("%q is outside of %q", hdr.Name, dest))
 		}
 
