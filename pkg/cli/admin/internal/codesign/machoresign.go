@@ -160,8 +160,10 @@ func extractTarToTmpAndSign(path string) (string, error) {
 
 		// Guard against tar slip: ensure the resolved path stays within tempDir.
 		// filepath.Clean/Join normalize but do not constrain the result, so an
-		// entry name containing ".." could escape the extraction directory.
-		if tempExtractionPath != cleanTempDir && !strings.HasPrefix(tempExtractionPath, cleanTempDir+string(os.PathSeparator)) {
+		// entry name containing ".." could escape the extraction directory. The
+		// safe branch is determined solely by strings.HasPrefix so that static
+		// analyzers recognize this as a sanitizer.
+		if !strings.HasPrefix(tempExtractionPath, cleanTempDir+string(os.PathSeparator)) {
 			return "", fmt.Errorf("invalid archive entry %q: escapes extraction directory", header.Name)
 		}
 

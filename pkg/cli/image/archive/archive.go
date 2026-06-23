@@ -141,6 +141,19 @@ func unpackLayer(dest string, layer io.Reader, options *TarOptions) (size int64,
 			}
 		}
 
+		// Ensure the resolved destination stays within dest before performing any
+		// filesystem operation (including parent-directory creation below), so a
+		// malicious entry containing '..' cannot escape the extraction directory.
+		path := filepath.Join(dest, hdr.Name)
+		rel, err := filepath.Rel(dest, path)
+		if err != nil {
+			return 0, err
+		}
+		// Note as these operations are platform specific, so must the slash be.
+		if strings.HasPrefix(rel, ".."+string(os.PathSeparator)) {
+			return 0, breakoutError(fmt.Errorf("%q is outside of %q", hdr.Name, dest))
+		}
+
 		// Windows does not support filenames with colons in them. Ignore
 		// these files. This is not a problem though (although it might
 		// appear that it is). Let's suppose a client is running docker pull.
@@ -201,16 +214,6 @@ func unpackLayer(dest string, layer io.Reader, options *TarOptions) (size int64,
 			}
 		}
 
-		path := filepath.Join(dest, hdr.Name)
-		rel, err := filepath.Rel(dest, path)
-		if err != nil {
-			return 0, err
-		}
-
-		// Note as these operations are platform specific, so must the slash be.
-		if strings.HasPrefix(rel, ".."+string(os.PathSeparator)) {
-			return 0, breakoutError(fmt.Errorf("%q is outside of %q", hdr.Name, dest))
-		}
 		base := filepath.Base(path)
 
 		if strings.HasPrefix(base, archive.WhiteoutPrefix) {
