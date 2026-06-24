@@ -5,6 +5,7 @@ import (
 	"compress/gzip"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -61,6 +62,9 @@ func TestExtractTarToTmpAndSign_RejectsPathTraversal(t *testing.T) {
 	if err == nil {
 		t.Fatal("expected an error for path-traversal entry, got nil")
 	}
+	if tempDir != "" {
+		t.Fatalf("expected empty tempDir on rejection, got %q", tempDir)
+	}
 
 	if _, statErr := os.Stat(sentinel); statErr == nil {
 		t.Fatalf("path traversal succeeded: file written outside extraction dir at %s", sentinel)
@@ -81,6 +85,12 @@ func TestExtractTarToTmpAndSign_ExtractsRegularFile(t *testing.T) {
 	}
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
+	}
+	if tempDir == "" {
+		t.Fatal("expected a non-empty tempDir on success")
+	}
+	if !strings.HasPrefix(filepath.Base(tempDir), "oc-release-extract-") {
+		t.Fatalf("unexpected tempDir name: %q", tempDir)
 	}
 
 	extracted := filepath.Join(tempDir, "tool")
