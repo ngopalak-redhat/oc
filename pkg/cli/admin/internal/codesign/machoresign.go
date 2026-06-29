@@ -4,10 +4,12 @@ import (
 	"archive/tar"
 	"compress/gzip"
 	"debug/macho"
+	"fmt"
 	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func ResignMacho(path string, asArchive bool, command string, links []string) error {
@@ -125,6 +127,7 @@ func extractTarToTmpAndSign(path string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	cleanTempDir := filepath.Clean(tempDir)
 
 	gzipFile, err := os.Open(path)
 	if err != nil {
@@ -154,6 +157,15 @@ func extractTarToTmpAndSign(path string) (string, error) {
 		}
 
 		tempExtractionPath := filepath.Clean(filepath.Join(tempDir, header.Name))
+
+		// Guard against tar slip: ensure the resolved path stays within tempDir.
+		// filepath.Clean/Join normalize but do not constrain the result, so an
+		// entry name containing ".." could escape the extraction directory. The
+		// safe branch is determined solely by strings.HasPrefix so that static
+		// analyzers recognize this as a sanitizer.
+		if !strings.HasPrefix(tempExtractionPath, cleanTempDir+string(os.PathSeparator)) {
+			return "", fmt.Errorf("invalid archive entry %q: escapes extraction directory", header.Name)
+		}
 
 		switch header.Typeflag {
 		case tar.TypeReg:
