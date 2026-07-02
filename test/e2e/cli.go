@@ -30,7 +30,7 @@ var _ = g.Describe("[sig-cli] Workloads test oc works well", func() {
 
 	// author: knarra@redhat.com
 	g.It("ROSA-OSD_CCS-ARO-Author:knarra-Medium-48681-Could start debug pod using pod definition yaml", oteginkgo.Informing(), func() {
-		skipIfMicroShift(oc)
+		SkipIfMicroShift(oc)
 		buildPruningBaseDir := FixturePath("testdata", "oc_cli")
 		debugPodUsingDefinitionT := filepath.Join(buildPruningBaseDir, "debugpod_48681.yaml")
 
@@ -58,7 +58,7 @@ var _ = g.Describe("[sig-cli] Workloads test oc works well", func() {
 
 	// author: yinzhou@redhat.com
 	g.It("Author:yinzhou-NonPreRelease-Longduration-High-45307-Critical-45327-check oc adm prune deployments to prune RS [Serial][Timeout:30m]", oteginkgo.Informing(), func() {
-		skipIfMicroShift(oc)
+		SkipIfMicroShift(oc)
 		skipIfDisconnected(oc)
 		g.By("create new namespace")
 		oc.SetupProject()
@@ -114,7 +114,7 @@ var _ = g.Describe("[sig-cli] Workloads test oc works well", func() {
 
 	// author: yinzhou@redhat.com
 	g.It("ROSA-OSD_CCS-ARO-Author:yinzhou-Medium-49859-should failed when oc import-image setting with Garbage values for --reference-policy", oteginkgo.Informing(), func() {
-		skipIfMicroShift(oc)
+		SkipIfMicroShift(oc)
 		g.By("create new namespace")
 		oc.SetupProject()
 
@@ -131,7 +131,7 @@ var _ = g.Describe("[sig-cli] Workloads test oc works well", func() {
 
 	// author: yinzhou@redhat.com
 	g.It("ROSA-OSD_CCS-ARO-ConnectedOnly-NonPreRelease-Longduration-Author:yinzhou-High-42982-Describe quota output should always show units [Timeout:30m]", oteginkgo.Informing(), func() {
-		skipIfMicroShift(oc)
+		SkipIfMicroShift(oc)
 		skipIfDisconnected(oc)
 		if isBaselineCapsSet(oc, "None") || isBaselineCapsSet(oc, "v4.13") || isBaselineCapsSet(oc, "v4.12") || isBaselineCapsSet(oc, "v4.14") || isBaselineCapsSet(oc, "v4.15") || isBaselineCapsSet(oc, "v4.11") && !isEnabledCapability(oc, "DeploymentConfig") {
 			skipMsg := "Skipping the test as baselinecaps have been set to None and some of API capabilities are not enabled!"
@@ -229,7 +229,7 @@ var _ = g.Describe("[sig-cli] Workloads test oc works well", func() {
 
 	// author: yinzhou@redhat.com
 	g.It("ROSA-OSD_CCS-ARO-ConnectedOnly-Author:yinzhou-Medium-51018-oc adm release extract support manifest list", oteginkgo.Informing(), func() {
-		skipIfMicroShift(oc)
+		SkipIfMicroShift(oc)
 		skipIfDisconnected(oc)
 
 		if !assertPullSecret(oc) {
@@ -282,7 +282,7 @@ var _ = g.Describe("[sig-cli] Workloads test oc works well", func() {
 
 	// author: knarra@redhat.com
 	g.It("ROSA-OSD_CCS-ARO-ConnectedOnly-Author:knarra-Medium-66989-Workloads oc debug with or without init container for pod", oteginkgo.Informing(), func() {
-		skipIfMicroShift(oc)
+		SkipIfMicroShift(oc)
 		skipIfDisconnected(oc)
 
 		oc.SetupProject()
@@ -328,7 +328,7 @@ var _ = g.Describe("[sig-cli] Workloads test oc works well", func() {
 
 	// author: yinzhou@redhat.com
 	g.It("ROSA-OSD_CCS-ARO-Author:yinzhou-LEVEL0-Critical-63002-oc new-app propagate containerPort information to the deployment if import-mode is PreserveOriginal", oteginkgo.Informing(), func() {
-		skipIfMicroShift(oc)
+		SkipIfMicroShift(oc)
 		skipIfDisconnected(oc)
 		g.By("create new namespace")
 		oc.SetupProject()
@@ -342,7 +342,7 @@ var _ = g.Describe("[sig-cli] Workloads test oc works well", func() {
 
 	// author: knarra@redhat.com
 	g.It("ROSA-OSD_CCS-ARO-Author:knarra-LEVEL0-Critical-64921-Critical-63854-Verify oc adm release info and oc image extract using --idms-file flag", oteginkgo.Informing(), func() {
-		skipIfMicroShift(oc)
+		SkipIfMicroShift(oc)
 		skipIfDisconnected(oc)
 
 		buildPruningBaseDir := FixturePath("testdata", "oc_cli")
@@ -440,7 +440,7 @@ var _ = g.Describe("[sig-cli] Workloads test oc works well", func() {
 
 	// author: yinzhou@redhat.com
 	g.It("ROSA-OSD_CCS-ARO-ConnectedOnly-Author:yinzhou-High-67013-oc image mirror with multi-arch images and --filter-by-os", oteginkgo.Informing(), func() {
-		skipIfMicroShift(oc)
+		SkipIfMicroShift(oc)
 		skipIfDisconnected(oc)
 
 		if !assertPullSecret(oc) {
@@ -660,7 +660,7 @@ var _ = g.Describe("[sig-cli] Workloads client test", func() {
 
 	// author: yinzhou@redhat.com
 	g.It("ROSA-OSD_CCS-ARO-Longduration-NonPreRelease-Author:yinzhou-Medium-49395-oc debug node should exit when timeout [Timeout:30m]", oteginkgo.Informing(), func() {
-		skipIfMicroShift(oc)
+		SkipIfMicroShift(oc)
 		workerNodeList, err := GetClusterNodesBy(oc, "worker")
 		o.Expect(err).NotTo(o.HaveOccurred())
 		g.By("Create new namespace")
@@ -707,7 +707,7 @@ var _ = g.Describe("[sig-cli] Workloads client test", func() {
 
 	// author: yinzhou@redhat.com
 	g.It("Author:yinzhou-ROSA-OSD_CCS-ARO-NonPreRelease-High-68647-oc whoami must work without oauth-apiserver", oteginkgo.Informing(), func() {
-		skipIfMicroShift(oc)
+		SkipIfMicroShift(oc)
 		isExternalOIDCCluster, err := IsExternalOIDCCluster(oc)
 		o.Expect(err).NotTo(o.HaveOccurred())
 		if !isExternalOIDCCluster {
@@ -859,7 +859,7 @@ var _ = g.Describe("[sig-cli] Workloads client test", func() {
 
 	// author: yinzhou@redhat.com
 	g.It("ROSA-OSD_CCS-ARO-ConnectedOnly-Author:yinzhou-High-71178-Make sure no mismatch for sha256sum of openshift install for mac version", oteginkgo.Informing(), func() {
-		skipIfMicroShift(oc)
+		SkipIfMicroShift(oc)
 		skipIfDisconnected(oc)
 
 		if !assertPullSecret(oc) {
@@ -901,7 +901,7 @@ var _ = g.Describe("[sig-cli] Workloads client test", func() {
 
 	// author: yinzhou@redhat.com
 	g.It("ROSA-OSD_CCS-ARO-ConnectedOnly-Author:yinzhou-Medium-71273-Medium-71275-Validate user is able to extract rhel8 and rhel9 oc from the ocp payload", oteginkgo.Informing(), func() {
-		skipIfMicroShift(oc)
+		SkipIfMicroShift(oc)
 		skipIfDisconnected(oc)
 
 		if !assertPullSecret(oc) {
@@ -973,7 +973,7 @@ var _ = g.Describe("[sig-cli] Workloads client test", func() {
 	})
 	// author: yinzhou@redhat.com
 	g.It("ROSA-OSD_CCS-ARO-Author:yinzhou-Medium-72217-Should get warning when there is an identical short name for two or more resources", oteginkgo.Informing(), func() {
-		skipIfMicroShift(oc)
+		SkipIfMicroShift(oc)
 		customResourceBaseDir := FixturePath("testdata", "oc_cli/case72217")
 		cronTabCRDF := filepath.Join(customResourceBaseDir, "crd-crontab-72217.yaml")
 		cronCRF := filepath.Join(customResourceBaseDir, "cr-cron-72217.yaml")
@@ -1024,7 +1024,7 @@ var _ = g.Describe("[sig-cli] Workloads client test", func() {
 	})
 
 	g.It("Author:yinzhou-ROSA-OSD_CCS-ARO-Medium-76150-Make sure oc debug node has set HOST env var", oteginkgo.Informing(), func() {
-		skipIfMicroShift(oc)
+		SkipIfMicroShift(oc)
 		mnodeName, err := oc.AsAdmin().WithoutNamespace().Run("get").Args("node", "-o=jsonpath={.items[0].metadata.name}").Output()
 		o.Expect(err).NotTo(o.HaveOccurred())
 		By("Create new namespace")
@@ -1044,7 +1044,7 @@ var _ = g.Describe("[sig-cli] Workloads client test", func() {
 	})
 
 	g.It("Author:yinzhou-ROSA-OSD_CCS-ARO-High-76116-Make sure oc could run on rhel with fips on", oteginkgo.Informing(), func() {
-		skipIfMicroShift(oc)
+		SkipIfMicroShift(oc)
 		workerNodeList, err := GetClusterNodesBy(oc, "worker")
 		o.Expect(err).NotTo(o.HaveOccurred())
 		By("Create new namespace")
@@ -1077,7 +1077,7 @@ var _ = g.Describe("[sig-cli] Workloads client test", func() {
 	})
 
 	g.It("ROSA-OSD_CCS-ARO-ConnectedOnly-Author:yinzhou-Critical-11882-Return description of resources with cli describe", oteginkgo.Informing(), func() {
-		skipIfMicroShift(oc)
+		SkipIfMicroShift(oc)
 		skipIfDisconnected(oc)
 		By("Create new namespace")
 		oc.SetupProject()
@@ -1114,7 +1114,7 @@ var _ = g.Describe("[sig-cli] Workloads client test", func() {
 	})
 
 	g.It("Author:yinzhou-ROSA-OSD_CCS-ARO-High-76287-make sure tools imagestream contains sosreport", oteginkgo.Informing(), func() {
-		skipIfMicroShift(oc)
+		SkipIfMicroShift(oc)
 		// Skip the case if cluster doest not have the imageRegistry installed
 		if !isEnabledCapability(oc, "ImageRegistry") {
 			skipMsg := "Skipped: cluster does not have imageRegistry installed"

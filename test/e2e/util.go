@@ -1050,9 +1050,9 @@ func isMicroShiftCluster(oc *CLI) bool {
 	return false
 }
 
-// skipIfMicroShift skips the test if running on a MicroShift cluster.
+// SkipIfMicroShift skips the test if running on a MicroShift cluster.
 // Use this for tests that are not compatible with MicroShift.
-func skipIfMicroShift(oc *CLI) {
+func SkipIfMicroShift(oc *CLI) {
 	if isMicroShiftCluster(oc) {
 		skipMsg := "Skipping test: not supported on MicroShift cluster"
 		e2e.Warningf("SKIPPING TEST: %s", skipMsg)
