@@ -1,4 +1,4 @@
-package e2e
+package accept
 
 import (
 	"context"
@@ -12,14 +12,16 @@ import (
 
 	configv1 "github.com/openshift/api/config/v1"
 	configv1client "github.com/openshift/client-go/config/clientset/versioned/typed/config/v1"
+
+	"github.com/openshift/oc/test/e2e"
 )
 
 var _ = g.Describe("[sig-cli][OCPFeatureGate:ClusterUpdateAcceptRisks] oc", g.Label("cluster-version-operator"), func() {
 
 	var (
 		ctx            = context.TODO()
-		kubeConfigPath = KubeConfigPath()
-		oc             = NewCLI("oc", kubeConfigPath).EnvVar("OC_ENABLE_CMD_UPGRADE_ACCEPT_RISKS", "true")
+		kubeConfigPath = e2e.KubeConfigPath()
+		oc             = e2e.NewCLI("oc", kubeConfigPath).EnvVar("OC_ENABLE_CMD_UPGRADE_ACCEPT_RISKS", "true")
 		configClient   *configv1client.ConfigV1Client
 	)
 
@@ -29,8 +31,8 @@ var _ = g.Describe("[sig-cli][OCPFeatureGate:ClusterUpdateAcceptRisks] oc", g.La
 		configClient, err = configv1client.NewForConfig(config)
 		o.Expect(err).NotTo(o.HaveOccurred())
 
-		skipIfMicroShift(oc)
-		SkipIfNotTechPreviewNoUpgrade(ctx, configClient)
+		e2e.SkipIfMicroShift(oc)
+		e2e.SkipIfNotTechPreviewNoUpgrade(ctx, configClient)
 
 		cv, err := configClient.ClusterVersions().Get(ctx, "version", metav1.GetOptions{})
 		o.Expect(err).NotTo(o.HaveOccurred())
