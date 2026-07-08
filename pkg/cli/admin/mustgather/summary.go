@@ -162,7 +162,7 @@ func humanSummaryForClusterVersion(clusterVersion *configv1.ClusterVersion) stri
 
 	lastChangeHumanDuration := "<unknown>"
 	if len(clusterVersion.Status.History) > 0 {
-		lastChangeHumanDuration = units.HumanDuration(time.Now().Sub(clusterVersion.Status.History[0].StartedTime.Time))
+		lastChangeHumanDuration = units.HumanDuration(time.Since(clusterVersion.Status.History[0].StartedTime.Time))
 	}
 
 	progressingConditionMessage := "<unknown>"
@@ -182,7 +182,7 @@ func humanSummaryForClusterVersion(clusterVersion *configv1.ClusterVersion) stri
 	case isStable:
 		return fmt.Sprintf("Stable at %q", clusterVersion.Status.History[0].Version)
 	default:
-		return fmt.Sprintf("Unknown state")
+		return "Unknown state"
 	}
 }
 

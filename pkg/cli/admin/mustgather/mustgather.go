@@ -237,7 +237,7 @@ func (o *MustGatherOptions) Complete(f kcmdutil.Factory, cmd *cobra.Command, arg
 	}
 	// TODO: this should be in Validate() method, but added here because of the call to o.completeImages() below
 	if o.AllImages {
-		errStr := fmt.Sprintf("and --all-images are mutually exclusive: please specify one or the other")
+		errStr := "and --all-images are mutually exclusive: please specify one or the other"
 		if len(o.Images) != 0 {
 			return fmt.Errorf("--image %s", errStr)
 		}
@@ -333,10 +333,7 @@ func (o *MustGatherOptions) completeImages(ctx context.Context) error {
 	}
 	if o.AllImages {
 		// find all csvs and clusteroperators with the annotation "operators.openshift.io/must-gather-image"
-		pluginImages := make(map[string]struct{})
-		var err error
-
-		pluginImages, err = o.annotatedCSVs(ctx)
+		pluginImages, err := o.annotatedCSVs(ctx)
 		if err != nil {
 			return err
 		}
@@ -1340,7 +1337,7 @@ func (o *MustGatherOptions) BackupGathering(ctx context.Context, errs []error) {
 	fmt.Fprintf(o.ErrOut, "Falling back to `oc adm inspect %s` to collect basic cluster types.\n", typeTargets)
 
 	streams := o.IOStreams
-	streams.Out = o.newPrefixWriter(streams.Out, fmt.Sprintf("[must-gather      ] OUT"), false, true)
+	streams.Out = o.newPrefixWriter(streams.Out, "[must-gather      ] OUT", false, true)
 	destDir := path.Join(o.DestDir, fmt.Sprintf("inspect.local.%06d", rand.Int63()))
 
 	if err := runInspect(ctx, streams, rest.CopyConfig(o.Config), destDir, []string{typeTargets}); err != nil {
@@ -1352,7 +1349,6 @@ func (o *MustGatherOptions) BackupGathering(ctx context.Context, errs []error) {
 	if err := runInspect(ctx, streams, rest.CopyConfig(o.Config), destDir, namedTargets); err != nil {
 		fmt.Fprintf(o.ErrOut, "error completing cluster named resource inspection: %v\n", err)
 	}
-	return
 }
 
 func runInspect(ctx context.Context, streams genericiooptions.IOStreams, config *rest.Config, destDir string, arguments []string) error {
